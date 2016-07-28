@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/notification_pref_title"
+        android:key="pref_key_notif_settings">
+        <SwitchPreference
+            android:icon="@drawable/ic_vibration_black_24dp"
+            android:key="pref_vibrator"
+            android:title="@string/vibrator"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:icon="@drawable/ic_volume_up_black_24dp"
+            android:key="pref_sound"
+            android:title="@string/sound"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:icon="@drawable/ic_wb_incandescent_black_24dp"
+            android:key="pref_led"
+            android:title="@string/led"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -2,6 +2,7 @@
     package="com.mathieukh.dyr">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -22,6 +23,7 @@
             android:taskAffinity=""
             android:excludeFromRecents="true">
         </activity>
+        <activity android:name=".Settings.SettingsActivity" />
         <receiver android:name=".NetworkChangeReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.net.wifi.STATE_CHANGE"/>

@@ -6,13 +6,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.mathieukh.dyr.DisplayTasks.DisplayTasksActivity;
+import com.mathieukh.dyr.Settings.SettingsFragment;
 import com.mathieukh.dyr.data.Injection;
 import com.mathieukh.dyr.data.Task;
 import com.mathieukh.dyr.data.source.TasksDataSource;
@@ -39,7 +44,9 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     }
 
     private void triggerNotification(Context context, String bssid) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         TasksRepository mTasksRepository;
         if (Injection.provideTasksRepository(context) != null)
             mTasksRepository = Injection.provideTasksRepository(context);
@@ -64,6 +71,14 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                                     .setSmallIcon(R.drawable.ic_dyr_notif)
                                     .setContentTitle(context.getResources().getString(R.string.notification_title))
                                     .setContentText(contentText);
+
+                    if(sharedPref.getBoolean(SettingsFragment.VIBRATOR_PREF_KEY, true))
+                        mBuilder.setVibrate(new long[]{0,1000});
+                    if(sharedPref.getBoolean(SettingsFragment.SOUND_PREF_KEY, true) && am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+                        mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+                    if(sharedPref.getBoolean(SettingsFragment.LED_PREF_KEY, true)) {
+                        mBuilder.setLights(Color.RED, 3000, 3000);
+                    }
 
                     // Creates an Intent for the Activity
                     Intent notifyIntent =
