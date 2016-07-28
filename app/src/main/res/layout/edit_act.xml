@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            app:titleTextColor="@android:color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <FrameLayout
+            android:id="@+id/contentFrame"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1" />
+        <RelativeLayout
+            android:background="@android:color/white"
+            android:id="@+id/form_add_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0">
+            <EditText
+                android:inputType="textCapSentences"
+                android:layout_marginLeft="8dp"
+                android:layout_centerVertical="true"
+                android:textSize="16sp"
+                android:hint="@string/add_hint"
+                android:id="@+id/task_desc_edit"
+                android:maxLines="5"
+                android:layout_toLeftOf="@+id/add_task_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionSend" />
+            <Button
+                android:enabled="false"
+                android:alpha="0.26"
+                android:layout_centerVertical="true"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:layout_margin="8dp"
+                android:id="@+id/add_task_button"
+                android:layout_alignParentRight="true"
+                android:text="@string/add"
+                android:textColor="@color/colorPrimary"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:minWidth="88dp"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

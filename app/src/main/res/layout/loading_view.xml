@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.leo.simplearcloader.SimpleArcLoader
+    android:visibility="visible"
+    android:id="@+id/loader"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:layout_gravity="center"
+    custom:arc_style="simple_arc"
+    custom:arc_speed="medium"
+    custom:arc_margin="3dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto">
+    </com.leo.simplearcloader.SimpleArcLoader>
