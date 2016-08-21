@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -143,6 +144,11 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
     }
 
     @Override
+    public void modifiedTask(int position) {
+        mAdapter.notifyItemChanged(position);
+    }
+
+    @Override
     public void showMessage(String message) {
         checkNotNull(getView());
         Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
@@ -203,11 +209,13 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         public TextView vDesc;
         public TextView vDate;
+        public ImageButton vKeep;
 
         public TaskViewHolder(View v) {
             super(v);
             vDesc = (TextView) v.findViewById(R.id.descriptionTaskTV);
             vDate = (TextView) v.findViewById(R.id.dateTaskTV);
+            vKeep = (ImageButton) v.findViewById(R.id.keep_task_button);
         }
     }
 
@@ -242,6 +250,16 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
                 popup.show();
                 return true;
             });
+            taskViewHolder.vKeep.setOnClickListener(view -> {
+                mPresenter.onKeepTaskClicked(taskViewHolder.getAdapterPosition());
+            });
+            if(task.isPermanent()){
+                taskViewHolder.vKeep.setBackgroundResource(R.color.colorPrimary);
+                taskViewHolder.vKeep.setImageResource(R.drawable.ic_pin_white);
+            }else {
+                taskViewHolder.vKeep.setBackgroundResource(android.R.color.transparent);
+                taskViewHolder.vKeep.setImageResource(R.drawable.ic_pin_black);
+            }
         }
 
         @Override

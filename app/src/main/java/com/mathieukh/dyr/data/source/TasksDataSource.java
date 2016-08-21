@@ -27,6 +27,8 @@ public interface TasksDataSource {
 
     void deleteTask(@NonNull String taskId);
 
+    void togglePermanent(@NonNull String taskId);
+
     interface LoadTasksCallback {
 
         void onTasksLoaded(List<Task> tasks);

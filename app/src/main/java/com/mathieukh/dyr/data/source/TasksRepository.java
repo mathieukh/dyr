@@ -175,6 +175,16 @@ public class TasksRepository implements TasksDataSource {
         mCachedTasks.remove(taskId);
     }
 
+    @Override
+    public void togglePermanent(@NonNull String taskId) {
+        checkNotNull(taskId);
+        mTasksLocalDataSource.togglePermanent(taskId);
+        if(mCachedTasks.containsValue(taskId)){
+            Task t = mCachedTasks.get(taskId);
+            t.togglePermanent();
+        }
+    }
+
     private void refreshCache(List<Task> tasks) {
         if (mCachedTasks == null) {
             mCachedTasks = new LinkedHashMap<>();

@@ -23,6 +23,8 @@ public interface EditTasksContract {
 
         void addedTask(int position);
 
+        void modifiedTask(int position);
+
         void showMessage(String message);
 
         void setTitleToolbar(String title);
@@ -50,5 +52,7 @@ public interface EditTasksContract {
         void addTask(String s);
 
         BroadcastReceiver getReceiver();
+
+        void onKeepTaskClicked(int adapterPosition);
     }
 }

@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    style="@style/Widget.AppCompat.Button.Borderless"
+<RelativeLayout style="@style/Widget.AppCompat.Button.Borderless"
     android:clickable="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:orientation="vertical"
-    android:id="@+id/contentPanel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
-        android:textColor="@android:color/darker_gray"
-        android:id="@+id/dateTaskTV"
-        android:textSize="14sp"
+    <ImageButton
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:src="@drawable/ic_pin_black"
+        android:id="@+id/keep_task_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+    <LinearLayout
+        android:layout_toRightOf="@+id/keep_task_button"
+        android:layout_marginLeft="16dp"
+        android:orientation="vertical"
+        android:id="@+id/contentPanel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:textColor="@android:color/black"
-        android:id="@+id/descriptionTaskTV"
-        android:textSize="16sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        android:layout_height="wrap_content">
+        <TextView
+            android:textColor="@android:color/black"
+            android:id="@+id/descriptionTaskTV"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="@android:color/darker_gray"
+            android:id="@+id/dateTaskTV"
+            android:textSize="14sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</RelativeLayout>

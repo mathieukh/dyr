@@ -101,4 +101,14 @@ public class TasksLocalDataSource implements TasksDataSource {
         checkNotNull(taskId);
         Paper.book(TASK_BOOK).delete(taskId);
     }
+
+    @Override
+    public void togglePermanent(@NonNull String taskId) {
+        checkNotNull(taskId);
+        Task t = Paper.book(TASK_BOOK).read(taskId, null);
+        if (t != null) {
+            t.togglePermanent();
+            Paper.book(TASK_BOOK).write(taskId, t);
+        }
+    }
 }

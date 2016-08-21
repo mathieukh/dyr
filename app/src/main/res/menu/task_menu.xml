@@ -7,6 +7,6 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/modify_task"
-        android:title="@string/delete"
+        android:title="@string/modify"
         app:showAsAction="always" />
 </menu>

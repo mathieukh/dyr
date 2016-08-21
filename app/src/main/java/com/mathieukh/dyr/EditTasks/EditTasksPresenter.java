@@ -134,6 +134,13 @@ public class EditTasksPresenter implements EditTasksContract.Presenter {
     }
 
     @Override
+    public void onKeepTaskClicked(int adapterPosition) {
+        mTasksRepository.togglePermanent(tasksPres.get(adapterPosition).getId());
+        tasksPres.get(adapterPosition).togglePermanent();
+        mVisualizeListView.modifiedTask(adapterPosition);
+    }
+
+    @Override
     public BroadcastReceiver getReceiver() {
         return mBroadcastReceiver;
     }

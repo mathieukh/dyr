@@ -49,4 +49,8 @@ public class Task {
     public boolean isPermanent() {
         return isPermanent;
     }
+
+    public void togglePermanent(){
+        this.isPermanent = !isPermanent;
+    }
 }
