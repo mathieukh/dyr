@@ -2,6 +2,8 @@
     <string name="add">Ajouter</string>
     <string name="add_prep">Ajouté %1$s</string>
     <string name="app_name">DYR</string>
+    <string name="delete">Supprimer</string>
+    <string name="modify">Modifier</string>
     <string name="vibrator">Vibreur</string>
     <string name="sound">Son</string>
     <string name="led">Led</string>
