@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        app:msv_errorView="@layout/nowifi_view"
         app:msv_emptyView="@layout/empty_view"
         app:msv_loadingView="@layout/loading_view"
         app:msv_viewState="loading">

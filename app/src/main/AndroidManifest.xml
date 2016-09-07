@@ -27,6 +27,7 @@
                 android:value=".MainActivity.MainActivity" />
         </activity>
         <activity
+            android:keepScreenOn="true"
             android:name=".DisplayTasks.DisplayTasksActivity"
             android:taskAffinity=""
             android:excludeFromRecents="true">
@@ -37,7 +38,7 @@
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".NotificationActionDoneReceiver" android:exported="false">
+        <receiver android:name=".NotificationActionReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="com.mathieukh.dyr.done_action_notif"/>
             </intent-filter>

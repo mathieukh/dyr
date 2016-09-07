@@ -91,10 +91,12 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     notifyIntent.putExtra("SSID", ssid);
                     notifyIntent.putExtra("ENTERING", isEntering);
                     // Creates the PendingIntent
+
+                    int idNotif = Integer.parseInt("" + (isEntering ? 1 : 0) + ssid.hashCode());
                     PendingIntent notifyPendingIntent =
                             PendingIntent.getActivity(
                                     context,
-                                    0,
+                                    idNotif,
                                     notifyIntent,
                                     PendingIntent.FLAG_UPDATE_CURRENT
                             );
@@ -107,12 +109,12 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                             new Intent();
                     doneAction.putExtra("SSID", ssid);
                     doneAction.putExtra("ENTERING", isEntering);
-                    doneAction.setAction(NotificationActionDoneReceiver.DONE_ACTION);
+                    doneAction.setAction(NotificationActionReceiver.DONE_ACTION);
                     //Creates the PendingIntent
                     PendingIntent pendingIntentDone =
                             PendingIntent.getBroadcast(
                                     context,
-                                    12345,
+                                    idNotif,
                                     doneAction,
                                     PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -129,8 +131,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     if (tasksNumber > 1) {
                         mBuildInbox.setSummaryText(mBuilder.mContentText);
                     }
-
-                    int idNotif = Integer.parseInt("" + (isEntering ? 1 : 0) + ssid.hashCode());
                     mNotificationManager.notify(idNotif, mBuildInbox.build());
 
                 }

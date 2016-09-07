@@ -13,7 +13,7 @@ import com.mathieukh.dyr.data.source.local.TasksLocalDataSource;
 /**
  * Created by sylom on 28/07/2016.
  */
-public class NotificationActionDoneReceiver extends BroadcastReceiver {
+public class NotificationActionReceiver extends BroadcastReceiver {
 
     public static final String DONE_ACTION = "com.mathieukh.dyr.done_action_notif";
 
