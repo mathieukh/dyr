@@ -27,9 +27,11 @@ public class NotificationActionDoneReceiver extends BroadcastReceiver {
                 mTasksRepository = Injection.provideTasksRepository(context);
             else
                 mTasksRepository = TasksRepository.getInstance(new TasksLocalDataSource());
-            String bssid = Preconditions.checkNotNull(intent.getStringExtra("BSSID"));
-            mTasksRepository.deleteAllTasks(bssid, false);
-            mNotificationManager.cancel(0);
+            String ssid = Preconditions.checkNotNull(intent.getStringExtra("SSID"));
+            boolean isEntering = intent.getBooleanExtra("ENTERING", false);
+            mTasksRepository.deleteAllTasks(ssid, isEntering, false);
+            int idNotif = Integer.parseInt("" + (isEntering ? 1 : 0) + ssid.hashCode());
+            mNotificationManager.cancel(idNotif);
         }
     }
 }

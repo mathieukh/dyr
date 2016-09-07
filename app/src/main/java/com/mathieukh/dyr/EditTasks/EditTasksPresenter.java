@@ -1,10 +1,5 @@
 package com.mathieukh.dyr.EditTasks;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 
 import com.kennyc.view.MultiStateView;
@@ -23,47 +18,32 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class EditTasksPresenter implements EditTasksContract.Presenter {
 
-    private WifiManager mWifiManager;
-    private WifiReceiver mBroadcastReceiver;
     private TasksRepository mTasksRepository;
     private EditTasksContract.View mVisualizeListView;
-    private WifiInfo mNetwork;
+    private String ssid;
+    private boolean isEntering;
 
     private List<Task> tasksPres = new ArrayList<>();
 
-    public EditTasksPresenter(@NonNull TasksRepository tasksRepository, @NonNull EditTasksContract.View visualizeListView, @NonNull WifiManager wifiManager) {
+    public EditTasksPresenter(@NonNull TasksRepository tasksRepository, @NonNull EditTasksContract.View visualizeListView, String ssid, boolean isEntering) {
         this.mTasksRepository = checkNotNull(tasksRepository);
         this.mVisualizeListView = checkNotNull(visualizeListView);
-        this.mWifiManager = checkNotNull(wifiManager);
-        mBroadcastReceiver = new WifiReceiver();
+        this.ssid = ssid;
+        this.isEntering = isEntering;
         this.mVisualizeListView.setPresenter(this);
     }
 
     @Override
     public void start() {
-        setupView();
-    }
-
-    private void setupView() {
-        mVisualizeListView.setTitleToolbar(R.string.app_name);
-        mNetwork = mWifiManager.getConnectionInfo();
-        if (mNetwork != null && mNetwork.getBSSID() != null) {
-            mVisualizeListView.displayAddTaskForm(true);
-            if (!mNetwork.getSSID().equals(""))
-                mVisualizeListView.setTitleToolbar(mNetwork.getSSID());
-            loadTasks();
-        } else {
-            mVisualizeListView.displayAddTaskForm(false);
-            mVisualizeListView.setViewState(MultiStateView.VIEW_STATE_ERROR);
-            mVisualizeListView.showMessage(R.string.no_wifi);
-        }
+        mVisualizeListView.setTitleToolbar(ssid.replaceAll("\"", ""));
+        loadTasks();
     }
 
     @Override
     public void loadTasks() {
         mVisualizeListView.displayAddTaskForm(false);
         mVisualizeListView.setViewState(MultiStateView.VIEW_STATE_LOADING);
-        mTasksRepository.getTasks(mNetwork.getBSSID(), new TasksDataSource.LoadTasksCallback() {
+        mTasksRepository.getTasks(ssid, isEntering, new TasksDataSource.LoadTasksCallback() {
             @Override
             public void onTasksLoaded(List<Task> tasks) {
                 tasksPres = tasks;
@@ -124,7 +104,7 @@ public class EditTasksPresenter implements EditTasksContract.Presenter {
     @Override
     public void addTask(String s) {
         if (!s.equalsIgnoreCase("")) {
-            Task t = new Task(mNetwork.getBSSID(), s, false);
+            Task t = new Task(ssid, s, false, isEntering);
             mTasksRepository.saveTask(t);
             tasksPres.add(t);
             mVisualizeListView.addedTask(tasksPres.indexOf(t));
@@ -140,15 +120,4 @@ public class EditTasksPresenter implements EditTasksContract.Presenter {
         mVisualizeListView.modifiedTask(adapterPosition);
     }
 
-    @Override
-    public BroadcastReceiver getReceiver() {
-        return mBroadcastReceiver;
-    }
-
-    public class WifiReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setupView();
-        }
-    }
 }

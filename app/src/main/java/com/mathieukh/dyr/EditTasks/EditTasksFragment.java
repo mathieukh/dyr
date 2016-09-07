@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,6 +16,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -49,6 +51,7 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
 
     public EditTasksFragment() {
         // Requires empty public constructor
+        setRetainInstance(true);
     }
 
     public static EditTasksFragment newInstance() {
@@ -64,7 +67,10 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        if (mPresenter == null)
+            getActivity().recreate();
+        else
+            mPresenter.start();
     }
 
     @Override
@@ -77,15 +83,16 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
         View view = inflater.inflate(R.layout.edit_frag, container, false);
         mStateView = (MultiStateView) view.findViewById(R.id.stateView);
         mToDoList = (RecyclerView) view.findViewById(R.id.toDoList);
-        mFormAddTask = (RelativeLayout) getActivity().findViewById(R.id.form_add_task);
-        mTaskDescForm = (EditText) getActivity().findViewById(R.id.task_desc_edit);
-        mTaskAddButton = (Button) getActivity().findViewById(R.id.add_task_button);
+        mFormAddTask = (RelativeLayout) view.findViewById(R.id.form_add_task);
+        mTaskDescForm = (EditText) view.findViewById(R.id.task_desc_edit);
+        mTaskAddButton = (Button) view.findViewById(R.id.add_task_button);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToDoList.setAdapter(mAdapter);
         mToDoList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mToDoList.setItemAnimator(new DefaultItemAnimator());
@@ -206,6 +213,17 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
         setTitleToolbar(getString(titleRes));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this.getActivity());
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         public TextView vDesc;
         public TextView vDate;
@@ -253,10 +271,10 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
             taskViewHolder.vKeep.setOnClickListener(view -> {
                 mPresenter.onKeepTaskClicked(taskViewHolder.getAdapterPosition());
             });
-            if(task.isPermanent()){
+            if (task.isPermanent()) {
                 taskViewHolder.vKeep.setBackgroundResource(R.color.colorPrimary);
                 taskViewHolder.vKeep.setImageResource(R.drawable.ic_pin_white);
-            }else {
+            } else {
                 taskViewHolder.vKeep.setBackgroundResource(android.R.color.transparent);
                 taskViewHolder.vKeep.setImageResource(R.drawable.ic_pin_black);
             }

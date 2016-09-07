@@ -23,7 +23,10 @@ public class DisplayTasksActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.display_act);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        String bssid = Preconditions.checkNotNull(getIntent().getStringExtra("BSSID"));
+        if (!getIntent().hasExtra("SSID") || !getIntent().hasExtra("ENTERING"))
+            finish();
+        String ssid = Preconditions.checkNotNull(getIntent().getStringExtra("SSID"));
+        boolean isEntering = getIntent().getBooleanExtra("ENTERING", false);
         setSupportActionBar(mToolbar);
 
         DisplayTasksFragment tasksFragment =
@@ -37,6 +40,12 @@ public class DisplayTasksActivity extends AppCompatActivity {
         // Create the presenter
         mDisplayTasksPresenter = new DisplayTasksPresenter(
                 Injection.provideTasksRepository(this),
-                tasksFragment, bssid);
+                tasksFragment, ssid, isEntering, savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mDisplayTasksPresenter.save(outState);
     }
 }

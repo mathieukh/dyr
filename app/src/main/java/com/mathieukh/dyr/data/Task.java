@@ -15,7 +15,7 @@ public class Task {
     private String mDescription;
 
     //Identifier of the wifi access point associated with the task
-    private String mBSSIDAssociated;
+    private String mSSIDAssociated;
 
     //Last modified date of the task
     private Date mDateModified;
@@ -23,10 +23,15 @@ public class Task {
     //Is the task is temporary or permanent for the wifi access point
     private boolean isPermanent;
 
-    public Task(String mBSSID, String mDescription, boolean isPermanent) {
+    //Is the task need to be display when entering or exiting from the network
+    private boolean enteringTask;
+
+    public Task(String mSSID, String mDescription, boolean isPermanent, boolean entering) {
         this.mId = UUID.randomUUID().toString();
-        this.mBSSIDAssociated = mBSSID;
+        this.mSSIDAssociated = mSSID;
         this.mDescription = mDescription;
+        this.isPermanent = isPermanent;
+        this.enteringTask = entering;
         mDateModified = new Date();
     }
 
@@ -38,8 +43,8 @@ public class Task {
         return mDescription;
     }
 
-    public String getBSSIDAssociated() {
-        return mBSSIDAssociated;
+    public String getSSIDAssociated() {
+        return mSSIDAssociated;
     }
 
     public Date getmDateModified() {
@@ -50,7 +55,11 @@ public class Task {
         return isPermanent;
     }
 
-    public void togglePermanent(){
+    public boolean isEnteringTask() {
+        return enteringTask;
+    }
+
+    public void togglePermanent() {
         this.isPermanent = !isPermanent;
     }
 }

@@ -1,6 +1,5 @@
 package com.mathieukh.dyr.EditTasks;
 
-import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 
 import com.mathieukh.dyr.BasePresenter;
@@ -50,8 +49,6 @@ public interface EditTasksContract {
         boolean onMenuItemClicked(int adapterPosition, int itemId);
 
         void addTask(String s);
-
-        BroadcastReceiver getReceiver();
 
         void onKeepTaskClicked(int adapterPosition);
     }

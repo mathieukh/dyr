@@ -2,8 +2,6 @@
     <string name="add">Ajouter</string>
     <string name="add_prep">Ajouté %1$s</string>
     <string name="app_name">DYR</string>
-    <string name="delete">Supprimer</string>
-    <string name="modify">Modifier</string>
     <string name="vibrator">Vibreur</string>
     <string name="sound">Son</string>
     <string name="led">Led</string>
@@ -12,10 +10,15 @@
     <string name="done_action">C\'est fait</string>
     <string name="delete_task">Supprimer la tâche?</string>
     <string name="no_content">Aucune tâche</string>
+    <string name="no_networks">Aucun réseau wifi trouvé</string>
+    <string name="current_network">Mon réseau actuel</string>
     <string name="no_wifi">Connectez-vous à un réseau wifi pour pouvoir créer votre liste</string>
+    <string name="wifi_not_activated">Activer le wifi afin de pour pouvoir créer votre liste</string>
     <string name="notification_content">%1$d tâches à effectuer</string>
     <string name="notification_title">Do You Remember ?</string>
     <string name="add_hint">Je dois me rappeler de…</string>
     <string name="error">Une erreur est survenue</string>
     <string name="all_tasks_marked">Toutes les tâches sont marquées</string>
+    <string name="entering">Entrant</string>
+    <string name="exiting">Sortant</string>
 </resources>

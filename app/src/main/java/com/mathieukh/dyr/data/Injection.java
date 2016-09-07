@@ -1,7 +1,6 @@
 package com.mathieukh.dyr.data;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 
 import com.mathieukh.dyr.MyApplication;
@@ -18,9 +17,5 @@ public class Injection {
 
     public static WifiManager provideWifiManager(Context cxt) {
         return ((MyApplication) cxt.getApplicationContext()).mWifiManager;
-    }
-
-    public static ConnectivityManager provideConnectivityManager(Context cxt) {
-        return ((MyApplication) cxt.getApplicationContext()).mConnectivityManager;
     }
 }

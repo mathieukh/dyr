@@ -52,6 +52,8 @@ public class DisplayTasksFragment extends Fragment implements DisplayTasksContra
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAdapter = new TaskAdapter(new ArrayList<>(0), new HashMap<>());
+        if (mPresenter == null)
+            getActivity().recreate();
     }
 
     @Override
@@ -87,6 +89,7 @@ public class DisplayTasksFragment extends Fragment implements DisplayTasksContra
                     mPresenter.onSnackbarActionClicked();
                 });
     }
+
 
     @Override
     public void showTasks(List<Task> tasks, HashMap<String, Boolean> tasksChecked) {

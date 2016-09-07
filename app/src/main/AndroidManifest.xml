@@ -8,15 +8,23 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".EditTasks.EditTasksActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize">
+            android:name=".MainActivity.MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".EditTasks.EditTasksActivity"
+            android:parentActivityName=".MainActivity.MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity.MainActivity" />
         </activity>
         <activity
             android:name=".DisplayTasks.DisplayTasksActivity"
@@ -26,7 +34,7 @@
         <activity android:name=".Settings.SettingsActivity" />
         <receiver android:name=".NetworkChangeReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="android.net.wifi.STATE_CHANGE"/>
+                <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
         <receiver android:name=".NotificationActionDoneReceiver" android:exported="false">

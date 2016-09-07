@@ -3,7 +3,6 @@ package com.mathieukh.dyr;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
@@ -21,7 +20,6 @@ public class MyApplication extends Application {
 
     public TasksRepository mTaskRepository;
     public WifiManager mWifiManager;
-    public ConnectivityManager mConnectivityManager;
 
     @Override
     public void onCreate() {
@@ -29,7 +27,6 @@ public class MyApplication extends Application {
         Paper.init(this);
         mTaskRepository = TasksRepository.getInstance(new TasksLocalDataSource());
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         SharedPreferences sharedpreferences = getSharedPreferences(MyApplication.APP_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -37,16 +34,16 @@ public class MyApplication extends Application {
 
         // On ne s'occupe de créer le current_state et last_bssid seulement si il n'existe pas au préalable, sinon le broadcast s'en chargera
         if (sharedpreferences.getInt(NetworkChangeReceiver.CURRENT_STATE, 0) == 0) {
-            if (mNetwork != null && mNetwork.getBSSID() != null) {
+            if (mNetwork != null && mNetwork.getSSID() != null) {
                 //Connexion wifi et bssid dispo:
                 //Etat 1 et enregistrement du bssid
-                editor.putString(NetworkChangeReceiver.LAST_BSSID_CONNECTED, mNetwork.getBSSID());
+                editor.putString(NetworkChangeReceiver.LAST_SSID_CONNECTED, mNetwork.getSSID());
                 editor.putInt(NetworkChangeReceiver.CURRENT_STATE, 1);
                 editor.apply();
             } else {
                 //Pas de connexion wifi :
                 //Etat 2
-                editor.putString(NetworkChangeReceiver.LAST_BSSID_CONNECTED, "");
+                editor.putString(NetworkChangeReceiver.LAST_SSID_CONNECTED, "");
                 editor.putInt(NetworkChangeReceiver.CURRENT_STATE, 2);
                 editor.apply();
             }

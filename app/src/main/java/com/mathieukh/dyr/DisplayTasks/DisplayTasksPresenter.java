@@ -1,7 +1,9 @@
 package com.mathieukh.dyr.DisplayTasks;
 
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 
+import com.annimon.stream.Stream;
 import com.google.common.base.Preconditions;
 import com.mathieukh.dyr.R;
 import com.mathieukh.dyr.data.Task;
@@ -22,23 +24,29 @@ public class DisplayTasksPresenter implements DisplayTasksContract.Presenter {
     HashMap<String, Boolean> tasksCheckedPres = new HashMap<>();
     private TasksRepository mTasksRepository;
     private DisplayTasksContract.View mVisualizeListView;
-    private String mBSSID;
+    private String mSSID;
+    private boolean isEntering;
+    private Bundle savedInstanceState;
 
-    public DisplayTasksPresenter(TasksRepository tasksRepository, DisplayTasksFragment tasksFragment, String bssid) {
+    public DisplayTasksPresenter(TasksRepository tasksRepository, DisplayTasksFragment tasksFragment, String ssid, boolean isEntering, Bundle savedInstanceState) {
         this.mTasksRepository = Preconditions.checkNotNull(tasksRepository);
         this.mVisualizeListView = Preconditions.checkNotNull(tasksFragment);
-        this.mBSSID = bssid;
+        this.mSSID = ssid;
+        this.isEntering = isEntering;
+        this.savedInstanceState = savedInstanceState;
         this.mVisualizeListView.setPresenter(this);
     }
 
     @Override
     public void start() {
         setupView();
+        if (savedInstanceState != null)
+            restore(savedInstanceState);
     }
 
     private void setupView() {
         mVisualizeListView.setTitleToolbar(R.string.app_name);
-        mTasksRepository.getTasks(mBSSID, new TasksDataSource.LoadTasksCallback() {
+        mTasksRepository.getTasks(mSSID, isEntering, new TasksDataSource.LoadTasksCallback() {
             @Override
             public void onTasksLoaded(List<Task> tasks) {
                 tasksPres = tasks;
@@ -87,7 +95,25 @@ public class DisplayTasksPresenter implements DisplayTasksContract.Presenter {
 
     @Override
     public void onSnackbarActionClicked() {
-        mTasksRepository.deleteAllTasks(mBSSID, false);
+        mTasksRepository.deleteAllTasks(mSSID, isEntering, false);
         mVisualizeListView.finishActivity();
+    }
+
+    @Override
+    public void save(Bundle outState) {
+        Stream.of(tasksCheckedPres)
+                .forEach(value -> outState.putBoolean(value.getKey(), value.getValue()));
+    }
+
+    @Override
+    public void restore(Bundle savedInstanceState) {
+        for (String key : savedInstanceState.keySet()) {
+            tasksCheckedPres.put(key, savedInstanceState.getBoolean(key));
+        }
+        mVisualizeListView.everyItemChanged();
+        if (tasksCheckedPres.containsValue(false))
+            mVisualizeListView.displaySnackbar(false);
+        else
+            mVisualizeListView.displaySnackbar(true);
     }
 }

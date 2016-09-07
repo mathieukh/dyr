@@ -13,9 +13,9 @@ public interface TasksDataSource {
 
     void getTasks(@NonNull LoadTasksCallback callback);
 
-    void getTasks(@NonNull String BSSIDIdentifier, @NonNull LoadTasksCallback callback);
+    void getTasks(@NonNull String SSIDIdentifier, @NonNull LoadTasksCallback callback);
 
-    void getTasks(@NonNull String BSSIDIdentifier, @NonNull boolean permanentOnes, @NonNull LoadTasksCallback callback);
+    void getTasks(@NonNull String SSIDIdentifier, @NonNull boolean entering, @NonNull LoadTasksCallback callback);
 
     void getTask(@NonNull String taskId, @NonNull GetTaskCallback callback);
 
@@ -23,7 +23,7 @@ public interface TasksDataSource {
 
     void refreshTasks();
 
-    void deleteAllTasks(@NonNull String BSSIDIdentifier, @NonNull boolean permanentOnes);
+    void deleteAllTasks(@NonNull String SSIDIdentifier, boolean isEntering, boolean permanentOnes);
 
     void deleteTask(@NonNull String taskId);
 

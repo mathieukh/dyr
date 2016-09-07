@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -33,7 +34,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     public final static String ACTION_NETWORK_CHANGE = "com.mathieukh.dyr.NETWORK_CHANGE";
 
-    public final static String LAST_BSSID_CONNECTED = "lastBssid";
+    public final static String LAST_SSID_CONNECTED = "lastSSID";
     public final static String CURRENT_STATE = "currentState";
 
 
@@ -43,17 +44,17 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         context.sendBroadcast(i);
     }
 
-    private void triggerNotification(Context context, String bssid) {
+    private void triggerNotification(Context context, String ssid, boolean isEntering) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         TasksRepository mTasksRepository;
         if (Injection.provideTasksRepository(context) != null)
             mTasksRepository = Injection.provideTasksRepository(context);
         else
             mTasksRepository = TasksRepository.getInstance(new TasksLocalDataSource());
         mTasksRepository.refreshTasks();
-        mTasksRepository.getTasks(bssid, new TasksDataSource.LoadTasksCallback() {
+        mTasksRepository.getTasks(ssid, isEntering, new TasksDataSource.LoadTasksCallback() {
             @Override
             public void onTasksLoaded(List<Task> tasks) {
                 if (!tasks.isEmpty()) {
@@ -72,11 +73,11 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                                     .setContentTitle(context.getResources().getString(R.string.notification_title))
                                     .setContentText(contentText);
 
-                    if(sharedPref.getBoolean(SettingsFragment.VIBRATOR_PREF_KEY, true))
-                        mBuilder.setVibrate(new long[]{0,1000});
-                    if(sharedPref.getBoolean(SettingsFragment.SOUND_PREF_KEY, true) && am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+                    if (sharedPref.getBoolean(SettingsFragment.VIBRATOR_PREF_KEY, true))
+                        mBuilder.setVibrate(new long[]{0, 1000});
+                    if (sharedPref.getBoolean(SettingsFragment.SOUND_PREF_KEY, true) && am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
                         mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-                    if(sharedPref.getBoolean(SettingsFragment.LED_PREF_KEY, true)) {
+                    if (sharedPref.getBoolean(SettingsFragment.LED_PREF_KEY, true)) {
                         mBuilder.setLights(Color.RED, 3000, 3000);
                     }
 
@@ -87,7 +88,8 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                    notifyIntent.putExtra("BSSID", bssid);
+                    notifyIntent.putExtra("SSID", ssid);
+                    notifyIntent.putExtra("ENTERING", isEntering);
                     // Creates the PendingIntent
                     PendingIntent notifyPendingIntent =
                             PendingIntent.getActivity(
@@ -103,7 +105,8 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     //Creates an Intent for the action
                     Intent doneAction =
                             new Intent();
-                    doneAction.putExtra("BSSID", bssid);
+                    doneAction.putExtra("SSID", ssid);
+                    doneAction.putExtra("ENTERING", isEntering);
                     doneAction.setAction(NotificationActionDoneReceiver.DONE_ACTION);
                     //Creates the PendingIntent
                     PendingIntent pendingIntentDone =
@@ -126,7 +129,9 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     if (tasksNumber > 1) {
                         mBuildInbox.setSummaryText(mBuilder.mContentText);
                     }
-                    mNotificationManager.notify(0, mBuildInbox.build());
+
+                    int idNotif = Integer.parseInt("" + (isEntering ? 1 : 0) + ssid.hashCode());
+                    mNotificationManager.notify(idNotif, mBuildInbox.build());
 
                 }
             }
@@ -153,19 +158,20 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                 //On était connecté à un réseau wifi
                 case 1:
                     //Le réseau wifi précédent est donc forcément noté
-                    String bssidPrec = sharedpreferences.getString(LAST_BSSID_CONNECTED, "");
-                    if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI && networkInfo.isConnected()) {
-                        if (intent.getStringExtra(WifiManager.EXTRA_BSSID) != null && !intent.getStringExtra(WifiManager.EXTRA_BSSID).equals(bssidPrec)) {
+                    String ssidPrec = sharedpreferences.getString(LAST_SSID_CONNECTED, "");
+                    if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI && networkInfo.isConnected()) {
+                        WifiInfo network = intent.getParcelableExtra(WifiManager.EXTRA_WIFI_INFO);
+                        if (!network.getSSID().equals("") && !network.getSSID().equals(ssidPrec)) {
                             //Si on est connecté à un nouveau réseau wifi que celui sur lequel on était
-                            triggerNotification(context, bssidPrec);
-                            editor.putString(LAST_BSSID_CONNECTED, intent.getStringExtra(WifiManager.EXTRA_BSSID));
+                            triggerNotification(context, ssidPrec, false);
+                            editor.putString(LAST_SSID_CONNECTED, network.getSSID());
                             editor.apply();
                             notifyActivities(context);
                         }
                     } else {
                         //On était connecté à un réseau wifi mais on ne l'est plus
-                        triggerNotification(context, bssidPrec);
-                        editor.putString(LAST_BSSID_CONNECTED, "");
+                        triggerNotification(context, ssidPrec, false);
+                        editor.putString(LAST_SSID_CONNECTED, "");
                         editor.putInt(CURRENT_STATE, 2);
                         editor.apply();
                         notifyActivities(context);
@@ -174,12 +180,16 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
                 //On n'était connecté à aucun réseau wifi
                 case 2:
-                    if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI && networkInfo.isConnected() && intent.getStringExtra(WifiManager.EXTRA_BSSID) != null) {
-                        //Si on est connecté à un réseau wifi et qu'il est exploitable ( BSSID accessible)
-                        editor.putString(LAST_BSSID_CONNECTED, intent.getStringExtra(WifiManager.EXTRA_BSSID));
-                        editor.putInt(CURRENT_STATE, 1);
-                        editor.apply();
-                        notifyActivities(context);
+                    if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI && networkInfo.isConnected()) {
+                        //Si on est connecté à un réseau wifi et qu'il est exploitable ( SSID accessible)
+                        WifiInfo network = intent.getParcelableExtra(WifiManager.EXTRA_WIFI_INFO);
+                        if (!network.getSSID().equals("")) {
+                            triggerNotification(context, network.getSSID(), true);
+                            editor.putString(LAST_SSID_CONNECTED, network.getSSID());
+                            editor.putInt(CURRENT_STATE, 1);
+                            editor.apply();
+                            notifyActivities(context);
+                        }
                     }
                     break;
             }

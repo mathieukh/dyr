@@ -1,5 +1,7 @@
 package com.mathieukh.dyr.DisplayTasks;
 
+import android.os.Bundle;
+
 import com.mathieukh.dyr.BasePresenter;
 import com.mathieukh.dyr.BaseView;
 import com.mathieukh.dyr.data.Task;
@@ -38,5 +40,9 @@ public interface DisplayTasksContract {
         void onCheckboxChanged(int adapterPosition, boolean isChecked);
 
         void onSnackbarActionClicked();
+
+        void save(Bundle outState);
+
+        void restore(Bundle savedInstanceState);
     }
 }

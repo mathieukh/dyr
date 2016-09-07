@@ -39,7 +39,7 @@ public class TasksLocalDataSource implements TasksDataSource {
             callback.onTasksLoaded(
                     Stream.of(Paper.book(TASK_BOOK).getAllKeys())
                             .map(k -> (Task) Paper.book(TASK_BOOK).read(k))
-                            .filter(t -> t.getBSSIDAssociated().equals(BSSIDIdentifier))
+                            .filter(t -> t.getSSIDAssociated().equals(BSSIDIdentifier))
                             .collect(Collectors.toList()));
         } catch (Exception ignored) {
             callback.onDataNotAvailable();
@@ -47,14 +47,14 @@ public class TasksLocalDataSource implements TasksDataSource {
     }
 
     @Override
-    public void getTasks(@NonNull String BSSIDIdentifier, @NonNull boolean permanentOnes, @NonNull LoadTasksCallback callback) {
-        checkNotNull(BSSIDIdentifier);
+    public void getTasks(@NonNull String SSIDIdentifier, @NonNull boolean entering, @NonNull LoadTasksCallback callback) {
+        checkNotNull(SSIDIdentifier);
         checkNotNull(callback);
         try {
             callback.onTasksLoaded(
                     Stream.of(Paper.book(TASK_BOOK).getAllKeys())
                             .map(k -> (Task) Paper.book(TASK_BOOK).read(k))
-                            .filter(t -> t.getBSSIDAssociated().equals(BSSIDIdentifier) && t.isPermanent() == permanentOnes)
+                            .filter(t -> t.getSSIDAssociated().equals(SSIDIdentifier) && t.isEnteringTask() == entering)
                             .collect(Collectors.toList()));
         } catch (Exception ignored) {
             callback.onDataNotAvailable();
@@ -88,10 +88,10 @@ public class TasksLocalDataSource implements TasksDataSource {
     }
 
     @Override
-    public void deleteAllTasks(@NonNull String BSSIDIdentifier, @NonNull boolean permanentOnes) {
+    public void deleteAllTasks(@NonNull String SSIDIdentifier, boolean isEntering, boolean permanentOnes) {
         Stream.of(Paper.book(TASK_BOOK).getAllKeys())
                 .map(k -> (Task) Paper.book(TASK_BOOK).read(k))
-                .filter(t -> t.getBSSIDAssociated().equals(BSSIDIdentifier) && t.isPermanent() == permanentOnes)
+                .filter(t -> t.getSSIDAssociated().equals(SSIDIdentifier) && t.isEnteringTask() == isEntering && t.isPermanent() == permanentOnes)
                 .map(Task::getId)
                 .forEach(s -> Paper.book(TASK_BOOK).delete(s));
     }

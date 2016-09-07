@@ -61,14 +61,14 @@ public class TasksRepository implements TasksDataSource {
     }
 
     @Override
-    public void getTasks(@NonNull String BSSIDIdentifier, @NonNull LoadTasksCallback callback) {
-        checkNotNull(BSSIDIdentifier);
+    public void getTasks(@NonNull String SSIDIdentifier, @NonNull LoadTasksCallback callback) {
+        checkNotNull(SSIDIdentifier);
         checkNotNull(callback);
 
         if (mCachedTasks != null && !mCacheIsDirty) {
             callback.onTasksLoaded(
                     Stream.of(mCachedTasks.values())
-                            .filter(t -> t.getBSSIDAssociated().equals(BSSIDIdentifier))
+                            .filter(t -> t.getSSIDAssociated().equals(SSIDIdentifier))
                             .collect(Collectors.toList()));
             return;
         }
@@ -77,7 +77,7 @@ public class TasksRepository implements TasksDataSource {
             public void onTasksLoaded(List<Task> tasks) {
                 callback.onTasksLoaded(
                         Stream.of(tasks)
-                                .filter(t -> t.getBSSIDAssociated().equals(BSSIDIdentifier))
+                                .filter(t -> t.getSSIDAssociated().equals(SSIDIdentifier))
                                 .collect(Collectors.toList()));
             }
 
@@ -89,14 +89,14 @@ public class TasksRepository implements TasksDataSource {
     }
 
     @Override
-    public void getTasks(@NonNull String BSSIDIdentifier, @NonNull boolean permanentOnes, @NonNull LoadTasksCallback callback) {
-        checkNotNull(BSSIDIdentifier);
+    public void getTasks(@NonNull String SSIDIdentifier, @NonNull boolean entering, @NonNull LoadTasksCallback callback) {
+        checkNotNull(SSIDIdentifier);
         checkNotNull(callback);
 
         if (mCachedTasks != null && !mCacheIsDirty) {
             callback.onTasksLoaded(
                     Stream.of(mCachedTasks.values())
-                            .filter(t -> t.getBSSIDAssociated().equals(BSSIDIdentifier) && t.isPermanent() == permanentOnes)
+                            .filter(t -> t.getSSIDAssociated().equals(SSIDIdentifier) && t.isEnteringTask() == entering)
                             .collect(Collectors.toList()));
             return;
         }
@@ -105,7 +105,7 @@ public class TasksRepository implements TasksDataSource {
             public void onTasksLoaded(List<Task> tasks) {
                 callback.onTasksLoaded(
                         Stream.of(mCachedTasks.values())
-                                .filter(t -> t.getBSSIDAssociated().equals(BSSIDIdentifier) && t.isPermanent() == permanentOnes)
+                                .filter(t -> t.getSSIDAssociated().equals(SSIDIdentifier) && t.isEnteringTask() == entering)
                                 .collect(Collectors.toList()));
             }
 
@@ -155,16 +155,15 @@ public class TasksRepository implements TasksDataSource {
     }
 
     @Override
-    public void deleteAllTasks(@NonNull String BSSIDIdentifier, @NonNull boolean permanentOnes) {
-        checkNotNull(BSSIDIdentifier);
-        checkNotNull(permanentOnes);
+    public void deleteAllTasks(@NonNull String SSIDIdentifier, boolean isEntering, boolean permanentOnes) {
+        checkNotNull(SSIDIdentifier);
 
-        mTasksLocalDataSource.deleteAllTasks(BSSIDIdentifier, permanentOnes);
+        mTasksLocalDataSource.deleteAllTasks(SSIDIdentifier, isEntering, permanentOnes);
         if (mCachedTasks == null) {
             mCachedTasks = new LinkedHashMap<>();
         }
         mCachedTasks = Stream.of(mCachedTasks)
-                .filterNot(s -> s.getValue().getBSSIDAssociated().equals(BSSIDIdentifier) && s.getValue().isPermanent() == permanentOnes)
+                .filterNot(s -> s.getValue().getSSIDAssociated().equals(SSIDIdentifier) && s.getValue().isEnteringTask() == isEntering && s.getValue().isPermanent() == permanentOnes)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
@@ -179,7 +178,7 @@ public class TasksRepository implements TasksDataSource {
     public void togglePermanent(@NonNull String taskId) {
         checkNotNull(taskId);
         mTasksLocalDataSource.togglePermanent(taskId);
-        if(mCachedTasks.containsValue(taskId)){
+        if (mCachedTasks.containsValue(taskId)) {
             Task t = mCachedTasks.get(taskId);
             t.togglePermanent();
         }
