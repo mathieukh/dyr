@@ -3,20 +3,29 @@
     <PreferenceCategory
         android:title="@string/notification_pref_title"
         android:key="pref_key_notif_settings">
-        <SwitchPreference
+        <CheckBoxPreference
             android:icon="@drawable/ic_vibration_black_24dp"
             android:key="pref_vibrator"
             android:title="@string/vibrator"
             android:defaultValue="true" />
-        <SwitchPreference
+        <CheckBoxPreference
             android:icon="@drawable/ic_volume_up_black_24dp"
             android:key="pref_sound"
             android:title="@string/sound"
             android:defaultValue="true" />
-        <SwitchPreference
+        <CheckBoxPreference
             android:icon="@drawable/ic_wb_incandescent_black_24dp"
             android:key="pref_led"
             android:title="@string/led"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/advertising_pref_title"
+        android:key="pref_key_ad_settings">
+        <CheckBoxPreference
+            android:key="pref_ad"
+            android:title="@string/banner"
+            android:summary="@string/pref_ad_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
 </PreferenceScreen>

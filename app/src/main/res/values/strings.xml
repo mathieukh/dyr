@@ -9,6 +9,7 @@
     <string name="led">LED</string>
     <string name="settings">Settings</string>
     <string name="notification_pref_title">Notification</string>
+    <string name="advertising_pref_title">Advertising</string>
     <string name="done_action">Done</string>
     <string name="delete_task">Delete the task?</string>
     <string name="no_content">No task</string>
@@ -24,4 +25,7 @@
     <string name="exiting">Outcoming</string>
     <string name="keep_task_title">Keep your task</string>
     <string name="keep_task_content">A pinned remimder will be keep until you have deleted it</string>
+    <string name="banner">Banner</string>
+    <string name="pref_ad_summary">Support me by allowing the display of a banner at the bottom of the screen displaying the tasks</string>
+    <string name="banner_ad_unit_id">NOTDEFINED</string>
 </resources>
