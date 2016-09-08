@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -40,8 +41,15 @@ public class DisplayTasksActivity extends AppCompatActivity {
         mAdView = (AdView) findViewById(R.id.adView);
 
         if(displayAd) {
-            AdRequest adRequest = new AdRequest.Builder().addTestDevice("NOT DEFINED").build();
+            AdRequest adRequest = new AdRequest.Builder().addTestDevice("NOTDEFINED").build();
             mAdView.loadAd(adRequest);
+            mAdView.setAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(int i) {
+                    super.onAdFailedToLoad(i);
+                    mAdView.setVisibility(View.GONE);
+                }
+            });
         }else {
             mAdView.setVisibility(View.GONE);
         }

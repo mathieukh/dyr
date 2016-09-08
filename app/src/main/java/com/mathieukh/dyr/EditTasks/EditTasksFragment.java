@@ -73,10 +73,7 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        if (mPresenter == null)
-            getActivity().recreate();
-        else
-            mPresenter.start();
+        mPresenter.start();
     }
 
     @Override
@@ -178,15 +175,16 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
                     mToDoList.removeOnLayoutChangeListener(this);
                 }
             });
-            mTaskDescForm.clearFocus();
-            View view = this.getActivity().getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
+
         }
         mAdapter.notifyItemInserted(position);
         mToDoList.smoothScrollToPosition(position);
+        mTaskDescForm.clearFocus();
+        View view = this.getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override

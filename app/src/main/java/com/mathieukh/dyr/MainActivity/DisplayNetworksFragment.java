@@ -57,10 +57,7 @@ public class DisplayNetworksFragment extends Fragment implements DisplayNetworks
     @Override
     public void onResume() {
         super.onResume();
-        if (mPresenter == null)
-            getActivity().recreate();
-        else
-            mPresenter.start();
+        mPresenter.start();
     }
 
     @Override

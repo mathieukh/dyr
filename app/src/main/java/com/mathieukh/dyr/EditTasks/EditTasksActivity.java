@@ -39,17 +39,13 @@ public class EditTasksActivity extends AppCompatActivity {
             ssid = getIntent().getStringExtra("SSID");
         }
         setSupportActionBar(mToolbar);
-
-        fragmentEntering = EditTasksFragment.newInstance();
-        mEditTasksEnteringPresenter = new EditTasksPresenter(Injection.provideTasksRepository(getApplicationContext()), fragmentEntering, ssid, true);
-
-        fragmentExiting = EditTasksFragment.newInstance();
-        mEditTasksExitingPresenter = new EditTasksPresenter(Injection.provideTasksRepository(getApplicationContext()), fragmentExiting, ssid, false);
-
-
         mAdapter = new DisplayTasksAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
         mTabs.setupWithViewPager(mPager);
+    }
+
+    private static String makeFragmentName(int viewId, int index) {
+        return "android:switcher:" + viewId + ":" + index;
     }
 
     public class DisplayTasksAdapter extends FragmentPagerAdapter {
@@ -61,9 +57,21 @@ public class EditTasksActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
+
                 case 0:
+                    fragmentEntering = (EditTasksFragment) getSupportFragmentManager().findFragmentByTag(makeFragmentName(mPager.getId(), position));
+                    if(fragmentEntering == null){
+                        fragmentEntering = EditTasksFragment.newInstance();
+                    }
+                    mEditTasksEnteringPresenter = new EditTasksPresenter(Injection.provideTasksRepository(getApplicationContext()), fragmentEntering, ssid, true);
                     return fragmentEntering;
+
                 case 1:
+                    fragmentExiting = (EditTasksFragment) getSupportFragmentManager().findFragmentByTag(makeFragmentName(mPager.getId(), position));
+                    if(fragmentExiting == null){
+                        fragmentExiting = EditTasksFragment.newInstance();
+                    }
+                    mEditTasksExitingPresenter = new EditTasksPresenter(Injection.provideTasksRepository(getApplicationContext()), fragmentExiting, ssid, false);
                     return fragmentExiting;
             }
             return null;

@@ -1,7 +1,7 @@
 <resources>
     <string name="add">Add</string>
     <string name="add_prep">Added %1$s</string>
-    <string name="app_name">DYR</string>
+    <string name="app_name" translatable="false">DYR</string>
     <string name="delete">Delete</string>
     <string name="modify">Modify</string>
     <string name="vibrator">Vibrator</string>
@@ -27,5 +27,5 @@
     <string name="keep_task_content">A pinned remimder will be keep until you have deleted it</string>
     <string name="banner">Banner</string>
     <string name="pref_ad_summary">Support me by allowing the display of a banner at the bottom of the screen displaying the tasks</string>
-    <string name="banner_ad_unit_id">NOTDEFINED</string>
+    <string name="banner_ad_unit_id" translatable="false">NOTDEFINED</string>
 </resources>
