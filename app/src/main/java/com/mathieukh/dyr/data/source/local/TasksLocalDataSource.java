@@ -32,21 +32,6 @@ public class TasksLocalDataSource implements TasksDataSource {
     }
 
     @Override
-    public void getTasks(@NonNull String BSSIDIdentifier, @NonNull LoadTasksCallback callback) {
-        checkNotNull(BSSIDIdentifier);
-        checkNotNull(callback);
-        try {
-            callback.onTasksLoaded(
-                    Stream.of(Paper.book(TASK_BOOK).getAllKeys())
-                            .map(k -> (Task) Paper.book(TASK_BOOK).read(k))
-                            .filter(t -> t.getSSIDAssociated().equals(BSSIDIdentifier))
-                            .collect(Collectors.toList()));
-        } catch (Exception ignored) {
-            callback.onDataNotAvailable();
-        }
-    }
-
-    @Override
     public void getTasks(@NonNull String SSIDIdentifier, @NonNull boolean entering, @NonNull LoadTasksCallback callback) {
         checkNotNull(SSIDIdentifier);
         checkNotNull(callback);
@@ -103,11 +88,11 @@ public class TasksLocalDataSource implements TasksDataSource {
     }
 
     @Override
-    public void togglePermanent(@NonNull String taskId) {
+    public void setPermanent(@NonNull String taskId, boolean keep) {
         checkNotNull(taskId);
         Task t = Paper.book(TASK_BOOK).read(taskId, null);
         if (t != null) {
-            t.togglePermanent();
+            t.setPermanent(keep);
             Paper.book(TASK_BOOK).write(taskId, t);
         }
     }

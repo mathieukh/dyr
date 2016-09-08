@@ -13,8 +13,6 @@ public interface TasksDataSource {
 
     void getTasks(@NonNull LoadTasksCallback callback);
 
-    void getTasks(@NonNull String SSIDIdentifier, @NonNull LoadTasksCallback callback);
-
     void getTasks(@NonNull String SSIDIdentifier, @NonNull boolean entering, @NonNull LoadTasksCallback callback);
 
     void getTask(@NonNull String taskId, @NonNull GetTaskCallback callback);
@@ -27,7 +25,7 @@ public interface TasksDataSource {
 
     void deleteTask(@NonNull String taskId);
 
-    void togglePermanent(@NonNull String taskId);
+    void setPermanent(@NonNull String taskId, boolean keep);
 
     interface LoadTasksCallback {
 

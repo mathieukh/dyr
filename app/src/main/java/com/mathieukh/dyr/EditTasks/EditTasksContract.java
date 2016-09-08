@@ -50,6 +50,6 @@ public interface EditTasksContract {
 
         void addTask(String s);
 
-        void onKeepTaskClicked(int adapterPosition);
+        void onKeepTaskClicked(int adapterPosition, boolean checked);
     }
 }

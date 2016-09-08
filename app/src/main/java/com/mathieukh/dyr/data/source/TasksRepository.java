@@ -61,34 +61,6 @@ public class TasksRepository implements TasksDataSource {
     }
 
     @Override
-    public void getTasks(@NonNull String SSIDIdentifier, @NonNull LoadTasksCallback callback) {
-        checkNotNull(SSIDIdentifier);
-        checkNotNull(callback);
-
-        if (mCachedTasks != null && !mCacheIsDirty) {
-            callback.onTasksLoaded(
-                    Stream.of(mCachedTasks.values())
-                            .filter(t -> t.getSSIDAssociated().equals(SSIDIdentifier))
-                            .collect(Collectors.toList()));
-            return;
-        }
-        getTasks(new LoadTasksCallback() {
-            @Override
-            public void onTasksLoaded(List<Task> tasks) {
-                callback.onTasksLoaded(
-                        Stream.of(tasks)
-                                .filter(t -> t.getSSIDAssociated().equals(SSIDIdentifier))
-                                .collect(Collectors.toList()));
-            }
-
-            @Override
-            public void onDataNotAvailable() {
-                callback.onDataNotAvailable();
-            }
-        });
-    }
-
-    @Override
     public void getTasks(@NonNull String SSIDIdentifier, @NonNull boolean entering, @NonNull LoadTasksCallback callback) {
         checkNotNull(SSIDIdentifier);
         checkNotNull(callback);
@@ -175,12 +147,12 @@ public class TasksRepository implements TasksDataSource {
     }
 
     @Override
-    public void togglePermanent(@NonNull String taskId) {
+    public void setPermanent(@NonNull String taskId, boolean keep) {
         checkNotNull(taskId);
-        mTasksLocalDataSource.togglePermanent(taskId);
+        mTasksLocalDataSource.setPermanent(taskId, keep);
         if (mCachedTasks.containsValue(taskId)) {
             Task t = mCachedTasks.get(taskId);
-            t.togglePermanent();
+            t.setPermanent(keep);
         }
     }
 

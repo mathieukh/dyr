@@ -22,13 +22,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kennyc.view.MultiStateView;
 import com.mathieukh.dyr.R;
 import com.mathieukh.dyr.data.Task;
+import com.rm.rmswitch.RMSwitch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,13 +227,13 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         public TextView vDesc;
         public TextView vDate;
-        public ImageButton vKeep;
+        public RMSwitch vKeep;
 
         public TaskViewHolder(View v) {
             super(v);
             vDesc = (TextView) v.findViewById(R.id.descriptionTaskTV);
             vDate = (TextView) v.findViewById(R.id.dateTaskTV);
-            vKeep = (ImageButton) v.findViewById(R.id.keep_task_button);
+            vKeep = (RMSwitch) v.findViewById(R.id.keep_task_button);
         }
     }
 
@@ -261,22 +261,10 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
             Task task = taskList.get(taskViewHolder.getAdapterPosition());
             taskViewHolder.vDesc.setText(task.getmDescription());
             taskViewHolder.vDate.setText(String.format(getString(R.string.add_prep), DateUtils.getRelativeTimeSpanString(getContext(), task.getmDateModified().getTime(), true)));
-            taskViewHolder.itemView.setOnLongClickListener(v1 -> {
-                PopupMenu popup = new PopupMenu(taskViewHolder.itemView.getContext(), taskViewHolder.itemView);
-                popup.inflate(R.menu.task_menu);
-                popup.setOnMenuItemClickListener(item -> mPresenter.onMenuItemClicked(taskViewHolder.getAdapterPosition(), item.getItemId()));
-                popup.show();
-                return true;
-            });
-            taskViewHolder.vKeep.setOnClickListener(view -> {
-                mPresenter.onKeepTaskClicked(taskViewHolder.getAdapterPosition());
-            });
             if (task.isPermanent()) {
-                taskViewHolder.vKeep.setBackgroundResource(R.color.colorPrimary);
-                taskViewHolder.vKeep.setImageResource(R.drawable.ic_pin_white);
+                taskViewHolder.vKeep.setChecked(true);
             } else {
-                taskViewHolder.vKeep.setBackgroundResource(android.R.color.transparent);
-                taskViewHolder.vKeep.setImageResource(R.drawable.ic_pin_black);
+                taskViewHolder.vKeep.setChecked(false);
             }
         }
 
@@ -285,7 +273,16 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
             View itemView = LayoutInflater.
                     from(viewGroup.getContext()).
                     inflate(R.layout.item_task, viewGroup, false);
-            return new TaskViewHolder(itemView);
+            TaskViewHolder holder = new TaskViewHolder(itemView);
+            holder.itemView.setOnLongClickListener(v1 -> {
+                PopupMenu popup = new PopupMenu(holder.itemView.getContext(), holder.itemView);
+                popup.inflate(R.menu.task_menu);
+                popup.setOnMenuItemClickListener(item -> mPresenter.onMenuItemClicked(holder.getAdapterPosition(), item.getItemId()));
+                popup.show();
+                return true;
+            });
+            holder.vKeep.addSwitchObserver(isChecked -> mPresenter.onKeepTaskClicked(holder.getAdapterPosition(), isChecked));
+            return holder;
         }
     }
 

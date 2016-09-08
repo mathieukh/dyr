@@ -59,7 +59,7 @@ public class Task {
         return enteringTask;
     }
 
-    public void togglePermanent() {
-        this.isPermanent = !isPermanent;
+    public void setPermanent(boolean permanent) {
+        this.isPermanent = permanent;
     }
 }
