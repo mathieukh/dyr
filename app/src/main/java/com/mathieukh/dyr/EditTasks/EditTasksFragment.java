@@ -1,5 +1,6 @@
 package com.mathieukh.dyr.EditTasks;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,21 +18,26 @@ import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kennyc.view.MultiStateView;
+import com.mathieukh.dyr.MyApplication;
 import com.mathieukh.dyr.R;
 import com.mathieukh.dyr.data.Task;
 import com.rm.rmswitch.RMSwitch;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -146,6 +152,39 @@ public class EditTasksFragment extends Fragment implements EditTasksContract.Vie
 
     @Override
     public void addedTask(int position) {
+        if(!((MyApplication)getActivity().getApplication()).pinnedTasksTuto){
+            mToDoList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    try {
+                        new MaterialTapTargetPrompt.Builder(getActivity())
+                                .setTarget(((TaskViewHolder) mToDoList.findViewHolderForAdapterPosition(position)).vKeep)
+                                .setPrimaryText(getResources().getString(R.string.keep_task_title))
+                                .setSecondaryText(getResources().getString(R.string.keep_task_content))
+                                .setBackgroundColourFromRes(R.color.colorPrimaryDark)
+                                .setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener() {
+                                    @Override
+                                    public void onHidePrompt(MotionEvent event, boolean tappedTarget) {
+                                        ((MyApplication)getActivity().getApplication()).mark(MyApplication.PINNED_TASK_TUTO);
+                                    }
+
+                                    @Override
+                                    public void onHidePromptComplete() {
+
+                                    }
+                                })
+                                .show();
+                    }catch (Exception ignored){}
+                    mToDoList.removeOnLayoutChangeListener(this);
+                }
+            });
+            mTaskDescForm.clearFocus();
+            View view = this.getActivity().getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
         mAdapter.notifyItemInserted(position);
         mToDoList.smoothScrollToPosition(position);
     }

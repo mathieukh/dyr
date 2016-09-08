@@ -16,10 +16,12 @@
     <string name="current_network">Mon réseau actuel</string>
     <string name="wifi_not_activated">Activer le wifi afin de pour pouvoir créer votre liste</string>
     <string name="notification_content">%1$d tâches à effectuer</string>
-    <string name="notification_title">Do You Remember ?</string>
+    <string name="notification_title">Did You Remember ?</string>
     <string name="add_hint">Je dois me rappeler de…</string>
     <string name="error">Une erreur est survenue</string>
     <string name="all_tasks_marked">Toutes les tâches sont marquées</string>
     <string name="entering">Entrant</string>
     <string name="exiting">Sortant</string>
+    <string name="keep_task_title">Conservez votre rappel</string>
+    <string name="keep_task_content">Un rappel épinglé sera conservé jusqu\'à sa suppression</string>
 </resources>

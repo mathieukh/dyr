@@ -16,10 +16,12 @@
     <string name="current_network">My current network</string>
     <string name="wifi_not_activated">Turn the wifi for being able to create your remembers</string>
     <string name="notification_content">%1$d tasks to do</string>
-    <string name="notification_title">Do You Remember ?</string>
+    <string name="notification_title">Did You Remember ?</string>
     <string name="add_hint">I need to remember to…</string>
     <string name="error">An error occurred</string>
     <string name="all_tasks_marked">Every task flagged</string>
     <string name="entering">Incoming</string>
     <string name="exiting">Outcoming</string>
+    <string name="keep_task_title">Keep your task</string>
+    <string name="keep_task_content">A pinned remimder will be keep until you have deleted it</string>
 </resources>

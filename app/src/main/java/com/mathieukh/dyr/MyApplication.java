@@ -17,9 +17,11 @@ import io.paperdb.Paper;
 public class MyApplication extends Application {
 
     public final static String APP_PREFERENCES = "appPreferences";
+    public final static String PINNED_TASK_TUTO = "pinnedTutoTask";
 
     public TasksRepository mTaskRepository;
     public WifiManager mWifiManager;
+    public boolean pinnedTasksTuto;
 
     @Override
     public void onCreate() {
@@ -32,6 +34,7 @@ public class MyApplication extends Application {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         WifiInfo mNetwork = mWifiManager.getConnectionInfo();
 
+        pinnedTasksTuto = sharedpreferences.getBoolean(PINNED_TASK_TUTO, false);
         // On ne s'occupe de créer le current_state et last_bssid seulement si il n'existe pas au préalable, sinon le broadcast s'en chargera
         if (sharedpreferences.getInt(NetworkChangeReceiver.CURRENT_STATE, 0) == 0) {
             if (mNetwork != null && mNetwork.getSSID() != null) {
@@ -54,5 +57,15 @@ public class MyApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
         TasksRepository.destroyInstance();
+    }
+
+    public void mark(String TUTO_TAG) {
+        SharedPreferences sharedpreferences = getSharedPreferences(MyApplication.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        if(TUTO_TAG.equals(PINNED_TASK_TUTO)){
+            pinnedTasksTuto = true;
+            editor.putBoolean(PINNED_TASK_TUTO, true);
+            editor.apply();
+        }
     }
 }
