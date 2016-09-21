@@ -17,8 +17,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.mathieukh.dyr.DisplayTasks.DisplayTasksActivity;
-import com.mathieukh.dyr.Settings.SettingsFragment;
+import com.mathieukh.dyr.activities.displaytasks.DisplayTasksActivity;
+import com.mathieukh.dyr.activities.settings.SettingsFragment;
 import com.mathieukh.dyr.data.Injection;
 import com.mathieukh.dyr.data.Task;
 import com.mathieukh.dyr.data.source.TasksDataSource;
@@ -151,6 +151,8 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         int currentState = sharedpreferences.getInt(CURRENT_STATE, 0);
         NetworkInfo networkInfo = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
 
+        notifyActivities(context);
+
         if (currentState == 0) {
             Log.d("NetworkChangeError", "Une erreur est survenue : Etat inatteignable dans le NetworkChangeReceiver");
         } else {
@@ -166,7 +168,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                             triggerNotification(context, ssidPrec, false);
                             editor.putString(LAST_SSID_CONNECTED, network.getSSID());
                             editor.apply();
-                            notifyActivities(context);
                         }
                     } else {
                         //On était connecté à un réseau wifi mais on ne l'est plus
@@ -174,7 +175,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                         editor.putString(LAST_SSID_CONNECTED, "");
                         editor.putInt(CURRENT_STATE, 2);
                         editor.apply();
-                        notifyActivities(context);
                     }
                     break;
 
@@ -188,7 +188,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                             editor.putString(LAST_SSID_CONNECTED, network.getSSID());
                             editor.putInt(CURRENT_STATE, 1);
                             editor.apply();
-                            notifyActivities(context);
                         }
                     }
                     break;

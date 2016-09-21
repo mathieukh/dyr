@@ -2,6 +2,7 @@ package com.mathieukh.dyr;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -27,6 +28,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Paper.init(this);
+        startService(new Intent(getApplicationContext(), StickyService.class));
         mTaskRepository = TasksRepository.getInstance(new TasksLocalDataSource());
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
